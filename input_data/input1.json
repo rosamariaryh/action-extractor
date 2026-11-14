@@ -1,0 +1,38 @@
+{
+  "transcript_id": "tr_001",
+  "source_filename": "GMT20261113-140211_Recording_1920x1080.mp4",
+  "language": "en",
+  "duration_seconds": 135,
+  "segments": [
+    {
+      "speaker": "Speaker 0",
+      "start": "00:00:04.120",
+      "end": "00:00:18.450",
+      "text": "Alright Marcus, thanks for hopping on. We need to decide if we're pushing the new usage-based billing tier this Thursday or holding until next Tuesday."
+    },
+    {
+      "speaker": "Speaker 1",
+      "start": "00:00:19.100",
+      "end": "00:00:36.800",
+      "text": "Honestly Elena, Thursday is risky. The stripe web hooks are still dropping events under load in staging, and I haven't finished the idempotency keys yet."
+    },
+    {
+      "speaker": "Speaker 0",
+      "start": "00:00:37.500",
+      "end": "00:00:49.200",
+      "text": "Okay, fair enough. Let's officially move the launch to Tuesday, November 18th. Can you get the webhook fix merged by Friday end of day?"
+    },
+    {
+      "speaker": "Speaker 1",
+      "start": "00:00:50.000",
+      "end": "00:01:05.300",
+      "text": "Yeah, Friday 5 PM is totally doable. Oh, and sure, I'll also rewrite the entire frontend in Rust before lunch if you want. Just kidding. Seriously though, I'll ping Sarah once staging is green so she can update the docs."
+    },
+    {
+      "speaker": "Speaker 0",
+      "start": "00:01:06.100",
+      "end": "00:01:22.900",
+      "text": "Haha, please don't touch the frontend. Cool, I'll update the release calendar now and let the customer success team know about Tuesday."
+    }
+  ]
+}

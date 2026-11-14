@@ -1,0 +1,1 @@
+TODO 15–20 tricky transcript snippets (e.g., overlapping speakers, sarcasm/jokes that sound like action items, multilingual code-switching—huge for HappyScribe, and ASR transcription errors)

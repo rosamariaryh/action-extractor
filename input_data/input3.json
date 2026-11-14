@@ -1,0 +1,38 @@
+{
+  "transcript_id": "tr_003",
+  "source_filename": null,
+  "language": "en",
+  "duration_seconds": 148,
+  "segments": [
+    {
+      "speaker": "Speaker 0",
+      "start": "00:00:05.200",
+      "end": "00:00:24.100",
+      "text": "Did you end up trying that new ramen spot near Poblenou over the weekend? The one with the black garlic broth?"
+    },
+    {
+      "speaker": "Speaker 1",
+      "start": "00:00:25.000",
+      "end": "00:00:49.800",
+      "text": "I tried to go on Saturday night, man, the line was wrapped around the block. Easily a 45-minute wait. We ended up grabbing tacos down the street instead."
+    },
+    {
+      "speaker": "Speaker 0",
+      "start": "00:00:50.400",
+      "end": "00:01:12.600",
+      "text": "Oh yeah, you have to go right when they open at 7:30 or you're doomed. Anyway, we should totally do a board game night next month once things calm down."
+    },
+    {
+      "speaker": "Speaker 1",
+      "start": "00:01:13.200",
+      "end": "00:01:35.000",
+      "text": "For sure, I'll bring Catan. Oh, before I forget—can you text me the name of that physio you went to for your shoulder? My left rotator cuff has been killing me since padel on Tuesday."
+    },
+    {
+      "speaker": "Speaker 0",
+      "start": "00:01:35.900",
+      "end": "00:01:52.300",
+      "text": "Yeah, I'll WhatsApp you his contact right now so I don't forget."
+    }
+  ]
+}

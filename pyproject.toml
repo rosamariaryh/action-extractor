@@ -1,0 +1,29 @@
+[project]
+name = "action-extractor"
+version = "0.1.0"
+description = "Action extractor: extract intelligent actions from transcripts"
+readme = "README.md"
+authors = [
+    { name = "rosamariaryh", email = "rosa.haplap@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.14.3",
+    "google-genai>=1.0.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "openinference-instrumentation-google-genai>=0.1.0",
+    "opentelemetry-sdk>=1.27.0",
+    "opentelemetry-exporter-otlp>=1.27.0",
+    "arize-phoenix>=21.0.0",
+    "arize-phoenix-evals>=3.10.0",
+    "rapidfuzz>=3.14.6",
+    "pandas>=2.0.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.0.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

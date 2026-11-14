@@ -1,0 +1,68 @@
+{
+  "transcript_id": "tr_004",
+  "source_filename": "audio_final_v2_exported.wav",
+  "language": "en",
+  "duration_seconds": 485,
+  "segments": [
+    {
+      "speaker": "Speaker 0",
+      "start": "00:00:10.000",
+      "end": "00:00:42.300",
+      "text": "Let's look at the p95 latency numbers for workspace transcript search. Right now, pure dense vector search in pine cone is taking 620 milliseconds, and recall on exact proper nouns and product SKUs is pretty terrible."
+    },
+    {
+      "speaker": "Speaker 1",
+      "start": "00:00:43.100",
+      "end": "00:01:19.800",
+      "text": "Right Priya, because embeddings blur exact keyword matches. I ran a benchmark yesterday combining BM twenty five lexical search with our dense embeddings using reciprocal rank fusion. Precision at 5 jumped from 61% to 84%."
+    },
+    {
+      "speaker": "Speaker 0",
+      "start": "00:01:20.500",
+      "end": "00:01:48.000",
+      "text": "What did that do to latency and infra cost, David? We have a strict 300-millisecond budget for the search endpoint."
+    },
+    {
+      "speaker": "Speaker 1",
+      "start": "00:01:49.100",
+      "end": "00:02:30.400",
+      "text": "Without a cross-encoder reranker, hybrid search sits at 140 milliseconds. If we add a cohere reranker on the top 50 chunks, it jumps to 410 milliseconds and adds about $180 a month at current volume."
+    },
+    {
+      "speaker": "Speaker 2",
+      "start": "00:02:31.200",
+      "end": "00:03:05.600",
+      "text": "410 milliseconds is too sluggish for instant type-ahead search. What if we ship hybrid BM25 plus dense embeddings first without the reranker, and only trigger reranking on explicit deep-research queries?"
+    },
+    {
+      "speaker": "Speaker 0",
+      "start": "00:03:06.400",
+      "end": "00:03:45.100",
+      "text": "I like that trade-off, Leo. Keep the default search fast and cheap, and gate the expensive reranker behind the 'Ask AI' deep query mode. Let's lock that in as our architecture."
+    },
+    {
+      "speaker": "Speaker 1",
+      "start": "00:03:46.000",
+      "end": "00:04:22.700",
+      "text": "Sounds good. I'll write the RFC by Wednesday and start backfilling the sparse BM25 index for existing enterprise workspaces."
+    },
+    {
+      "speaker": "Speaker 0",
+      "start": "00:04:23.500",
+      "end": "00:05:01.900",
+      "text": "Make sure you throttle that backfill job so we don't spike Postgres CPU during peak European business hours. Run it between 11 PM and 5 AM CET."
+    },
+    {
+      "speaker": "Speaker 2",
+      "start": "00:05:02.800",
+      "end": "00:05:35.000",
+      "text": "Also, let's set up an automated eval set of 100 real user search queries before we flip the feature flag so we can verify there's no regression on non-English transcripts."
+    },
+    {
+      "speaker": "Speaker 1",
+      "start": "00:05:36.000",
+      "end": "00:05:55.200",
+      "text": "Agreed. I'll pair with Leo on Thursday morning to curate those 100 multilingual queries."
+    }
+  ]
+}
