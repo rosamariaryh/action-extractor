@@ -1,0 +1,53 @@
+services:
+  api:
+    build: .
+    container_name: action-extractor
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - PHOENIX_COLLECTOR_ENDPOINT=http://phoenix:4317
+    depends_on:
+      - redis
+      - phoenix
+
+  evals:
+    profiles: ["eval"]
+    build: .
+    env_file:
+      - .env
+    environment:
+      - PHOENIX_COLLECTOR_ENDPOINT=http://phoenix:4317
+      - PHOENIX_UI_ENDPOINT=http://phoenix:6006
+      - EVAL_OUTPUT_DIR=/app/evals/output
+    entrypoint: ["python", "-m", "evals.main"]
+    volumes:
+      - ./input_data:/app/input_data:ro
+      - ./output:/app/output:ro
+      - ./eval_output:/app/eval_output
+      - ./evals/output:/app/evals/output
+    depends_on:
+      - phoenix
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    container_name: phoenix
+    ports:
+      - "6006:6006"
+      - "4317:4317"
+    environment:
+      - PHOENIX_WORKING_DIR=/mnt/data
+      - PHOENIX_ENABLE_AUTH=false
+      - PHOENIX_SECRET=${PHOENIX_SECRET}
+      - PHOENIX_DEFAULT_ADMIN_INITIAL_PASSWORD=${PHOENIX_DEFAULT_ADMIN_INITIAL_PASSWORD}
+    volumes:
+      - phoenix_data:/mnt/data
+volumes:
+  phoenix_data:

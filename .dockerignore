@@ -1,0 +1,9 @@
+.env
+.git
+.idea
+.venv
+__pycache__
+*.py[cod]
+output
+input_data
+evals/output
