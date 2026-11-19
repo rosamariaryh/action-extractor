@@ -9,6 +9,7 @@ from dataclasses import replace
 from functools import lru_cache
 from typing import Any, Literal
 
+from google.genai.errors import ServerError
 from pydantic import BaseModel, Field
 from opentelemetry import trace
 
@@ -83,29 +84,40 @@ Extracted action items:
 {json.dumps(action_items, ensure_ascii=False, indent=2)}
 """
 
-            verdict = _get_judge_client().generate_structured(
-                prompt,
-                response_schema=ActionabilityVerdict,
-                system_instruction=(
-                    "You are a strict, impartial evaluator for a meeting action-item extractor. "
-                    "Return a score based only on the supplied transcript and extraction."
-                ),
-            )
+            try:
+                verdict = _get_judge_client().generate_structured(
+                    prompt,
+                    response_schema=ActionabilityVerdict,
+                    system_instruction=(
+                        "You are a strict, impartial evaluator for a meeting action-item extractor. "
+                        "Return a score based only on the supplied transcript and extraction."
+                    ),
+                )
+            except ServerError as exc:
+                if exc.code != 503:
+                    raise
+                verdict = None
+                result = EvaluationResult(
+                    score=None,
+                    label="unavailable",
+                    explanation="Gemini actionability judge was unavailable (503); no score was produced.",
+                )
 
-        span.set_attributes(
-            {
-                "eval.name": "actionability",
-                "eval.type": "llm_judge",
-                "eval.score": verdict.score,
-                "eval.label": verdict.label,
-                "eval.explanation": verdict.explanation,
-            }
-        )
-        result = EvaluationResult(
-            score=verdict.score,
-            label=verdict.label,
-            explanation=verdict.explanation,
-        )
+        if verdict is not None:
+            result = EvaluationResult(
+                score=verdict.score,
+                label=verdict.label,
+                explanation=verdict.explanation,
+            )
+        attributes: dict[str, Any] = {
+            "eval.name": "actionability",
+            "eval.type": "llm_judge",
+            "eval.label": result.label,
+            "eval.explanation": result.explanation,
+        }
+        if result.score is not None:
+            attributes["eval.score"] = result.score
+        span.set_attributes(attributes)
         span_id = f"{span.get_span_context().span_id:016x}"
 
     record_evaluation_result("actionability", "llm_judge", result, span_id)

@@ -34,7 +34,15 @@ def health_check() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.post("/extract", tags=["extraction"], response_model=ExtractionResponse)
+@app.post(
+    "/extract",
+    tags=["extraction"],
+    response_model=ExtractionResponse,
+    responses={
+        502: {"description": "Transcript extraction failed"},
+        503: {"description": "LLM provider is not configured"},
+    },
+)
 def extract(transcript: dict[str, Any]) -> ExtractionResponse:
     """Extract grounded items from a transcript JSON request body."""
     try:

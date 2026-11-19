@@ -5,14 +5,15 @@ from __future__ import annotations
 import json
 import logging
 import os
+import time
 from contextvars import ContextVar
 from datetime import datetime, timezone
 from pathlib import Path
 from threading import Lock
 from typing import Any
 
-import pandas as pd
-from phoenix.trace import SpanEvaluations
+from httpx import HTTPStatusError
+from phoenix.client import Client
 
 from opentelemetry import trace
 
@@ -113,21 +114,35 @@ def _log_to_phoenix(name: str, span_id: str, result: EvaluationResult) -> None:
     try:
         provider = trace.get_tracer_provider()
         force_flush = getattr(provider, "force_flush", None)
-        if force_flush:
-            force_flush()
+        if force_flush and not force_flush():
+            _LOGGER.warning(
+                "Evaluation saved locally but not attached to Phoenix: trace export did not flush"
+            )
+            return
 
         api_key = os.getenv("PHOENIX_API_KEY", "").strip()
         if api_key and not os.getenv("PHOENIX_CLIENT_HEADERS"):
             os.environ["PHOENIX_CLIENT_HEADERS"] = f"api_key={api_key}"
 
-        import phoenix as px
-
-        dataframe = pd.DataFrame(
-            [{"score": result.score, "label": result.label, "explanation": result.explanation}],
-            index=pd.Index([span_id], name="context.span_id"),
-        )
-        px.Client(endpoint=endpoint).log_evaluations(
-            SpanEvaluations(eval_name=name, dataframe=dataframe)
-        )
+        client = Client(base_url=endpoint)
+        delays = (0.1, 0.25, 0.5, 1.0, 2.0)
+        for attempt, delay in enumerate((*delays, None)):
+            try:
+                client.spans.add_span_annotation(
+                    span_id=span_id,
+                    annotation_name=name,
+                    annotator_kind="LLM" if name.startswith("llm_judge.") else "CODE",
+                    score=result.score,
+                    label=result.label,
+                    explanation=result.explanation,
+                    sync=True,
+                )
+                break
+            except HTTPStatusError as exc:
+                # Phoenix accepts OTLP spans asynchronously. A brief delay can occur
+                # between flushing a span and making it available for annotations.
+                if exc.response.status_code != 404 or delay is None:
+                    raise
+                time.sleep(delay)
     except Exception:
         _LOGGER.exception("Could not attach %s evaluation result to Phoenix", name)

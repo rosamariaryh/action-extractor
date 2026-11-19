@@ -128,10 +128,12 @@ def main() -> None:
     print(f"Extraction: {extraction_path}")
     print("\nDeterministic metrics:")
     for name, result in results[:-1]:
-        print(f"  {name}: {result.score:.2f} ({result.label}) — {result.explanation}")
+        score = f"{result.score:.2f}" if result.score is not None else "unscored"
+        print(f"  {name}: {score} ({result.label}) — {result.explanation}")
     print("\nLLM judges:")
     for name, result in results[-1:]:
-        print(f"  {name}: {result.score:.2f} ({result.label}) — {result.explanation}")
+        score = f"{result.score:.2f}" if result.score is not None else "unscored"
+        print(f"  {name}: {score} ({result.label}) — {result.explanation}")
     print(f"Evaluation log: {evaluation_log_path}")
 
 

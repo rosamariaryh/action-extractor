@@ -94,6 +94,8 @@ uv run python -m evals.main input_data/input1.json --expected-action-count 2 --n
 
 The Gemini extractor and actionability judge are instrumented with OpenTelemetry and OpenInference. In the Phoenix UI, the judge call appears as a Gemini generation span nested under `eval.actionability`. Gemini token counts are shown when the response includes usage metadata. Deterministic evaluation spans and the corresponding evaluation annotations are also sent to Phoenix.
 
+See Phoenix logs for relevant endpoints.( e.g. http://localhost:6006).
+
 Docker Compose configures the OTLP gRPC collector at `http://phoenix:4317` and the Phoenix API/UI at `http://phoenix:6006`. Compose currently runs Phoenix with authentication disabled. If authentication is enabled in another deployment, configure its API key as `PHOENIX_API_KEY`. For local application runs outside Compose, set `PHOENIX_COLLECTOR_ENDPOINT` (for example, `http://127.0.0.1:4317`); set `PHOENIX_UI_ENDPOINT` if the Phoenix API endpoint cannot be inferred from the collector address.
 
 ## Dependencies
